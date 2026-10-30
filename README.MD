@@ -61,6 +61,27 @@ ADR significa Architecture Decision Record, o en español, “registro de decisi
 
 **Consecuencias:** Más control sobre usuarios y roles, y menos dependencias para quien clone el repo. A cambio, si hiciera falta SSO más adelante, habría que implementarlo a mano
 
+### ADR 003: Railway como hosting del proyecto, en formato monolito
+
+**Estado:** Aceptado
+
+**Contexto:** El proyecto necesita app web, worker de colas y MySQL, con un
+presupuesto mínimo. La interfaz se sirve con Inertia desde el propio Laravel.
+
+**Decisión:** Desplegar el monolito completo en Railway.
+
+**Alternativas descartadas:**
+
+- VPS propio: costo mensual fijo y mantenimiento del servidor.
+- Backend en Railway y frontend en Netlify: no reduce el costo (el consumo
+  está en el backend) y obliga a reescribir la autenticación como API + SPA.
+- Vercel o Netlify para todo: no encajan con PHP, colas ni MySQL.
+
+**Consecuencias:** Un único despliegue y un único pipeline. Hay que preparar
+una build de producción, logs a stderr, servicios separados (web, worker,
+MySQL) y SSR de Inertia desactivado. Railway es adecuado para demos, no para
+producción de largo plazo.
+
 ### ADR 00..: decisiones de entorno
 
 **Estado:**

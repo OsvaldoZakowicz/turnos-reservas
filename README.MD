@@ -82,7 +82,77 @@ una build de producción, logs a stderr, servicios separados (web, worker,
 MySQL) y SSR de Inertia desactivado. Railway es adecuado para demos, no para
 producción de largo plazo.
 
-### ADR 00..: decisiones de entorno
+### ADR-004: versión de PHP alineada entre Sail y CI
+
+- **Estado:** aceptado
+- **Fecha:** 04/11/2026
+
+**Contexto:**
+
+El 20 de octubre de 2026 se filtraron dos vulnerabilidades críticas en el
+núcleo de PHP (CVE-2026-109618 y CVE-2026-109619, conocidas como php2shell)
+que permiten ejecución remota de código sin autenticación. El fallo está en
+el motor, por lo que el código de la aplicación no alcanza a mitigarlo. Los
+parches salieron el 21 de octubre en 8.5.12, 8.4.27, 8.3.36 y 8.2.35.
+La imagen de Sail del proyecto se construye con PHP 8.5, mientras el CI
+estaba planteado en 8.3, así que se probaba contra una versión distinta de
+la de desarrollo.
+
+**Decisión:**
+
+Usar PHP 8.5 en Sail y en el CI, con 8.5.12 como versión mínima. El pipeline
+incluye un paso que falla si la versión de PHP es menor. La misma versión se
+fija en el despliegue.
+
+**Alternativas descartadas:**
+
+- Fijar Sail en PHP 8.3 (8.3.36): exige tocar el runtime de Sail y
+  alejarse de su configuración por defecto, sin una ventaja concreta para el
+  proyecto.
+- Dejar el CI en 8.3: los tests correrían en una versión que no es la de
+  desarrollo ni la de producción.
+- No verificar la versión en el CI: un entorno desactualizado pasaría
+  desapercibido y el pipeline daría una falsa sensación de seguridad.
+
+**Consecuencias:**
+
+- Desarrollo, CI y producción comparten versión de PHP.
+- Una versión vulnerable rompe el pipeline en lugar de llegar a producción.
+- Al salir un parche nuevo hay que subir el mínimo en el CI y reconstruir la
+  imagen de Sail con `sail build --no-cache`.
+
+### ADR-005: MySQL real en el CI en lugar de SQLite
+
+- **Estado:** aceptado
+- **Fecha:** 04/11/2026
+
+**Contexto:**
+
+El núcleo del proyecto es evitar reservas superpuestas bajo concurrencia, lo
+que requiere transacciones y bloqueo de filas (`lockForUpdate`). SQLite no
+implementa ese bloqueo de la misma forma, por lo que los tests de
+concurrencia podrían pasar en CI y fallar en producción.
+
+**Decisión:**
+
+El CI levanta un servicio MySQL 8.0 y ejecuta los tests contra él, igual que
+Sail en desarrollo y Railway en producción.
+
+**Alternativas descartadas:**
+
+- SQLite en memoria: más rápido y simple, pero invalida los tests de
+  concurrencia, que son lo más valioso del proyecto.
+- Mockear el bloqueo de filas: prueba el mock y no el comportamiento real
+  de la base de datos.
+
+**Consecuencias:**
+
+- Los tests de concurrencia reflejan el motor real.
+- El pipeline tarda unos segundos más por el arranque del servicio MySQL.
+- Las credenciales del servicio son solo del entorno efímero del CI, no
+  secretos reales.
+
+### ADR 00..: titulo
 
 **Estado:**
 

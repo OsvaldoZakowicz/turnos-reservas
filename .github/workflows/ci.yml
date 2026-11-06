@@ -80,6 +80,10 @@ jobs:
       - name: estilo con pint
         run: ./vendor/bin/pint --test
 
+      # busca errores de tipos y logica sin ejecutar el codigo
+      - name: analisis estatico con phpstan
+        run: ./vendor/bin/phpstan analyse --memory-limit=1G
+
       # corre todos los tests
       - name: tests con pest
         run: ./vendor/bin/pest

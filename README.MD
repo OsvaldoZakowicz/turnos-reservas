@@ -152,6 +152,54 @@ Sail en desarrollo y Railway en producción.
 - Las credenciales del servicio son solo del entorno efímero del CI, no
   secretos reales.
 
+### ADR 006: Adopción del Modelo de Negocio Unificado (Enfoque A) para el Sistema de Reservas
+
+- **Estado:** Aceptado
+- **Fecha:** 04/11/2026
+
+**Contexto:**
+Estamos desarrollando una demo en Laravel 13 orientada a un sistema de turnos y reservas integrado con un agente de IA (AI SDK) y un servidor MCP. Necesitamos definir el alcance de los roles de usuario (`admin` y `client`) y la arquitectura de datos subyacente para las consultas de disponibilidad y prevención de superposiciones, manteniendo una complejidad baja y un alto rendimiento operativo.
+
+**Decisión:**
+Adoptar el **Enfoque A (Modelo Unificado)**:
+
+- El rol **`admin`** gestiona de manera centralizada la creación y configuración de los servicios (ej. duración, precios).
+- El rol **`client`** se limita exclusivamente a consultar disponibilidad y reservar dichos servicios.
+- Se descarta la lógica de múltiples proveedores o perfiles cruzados.
+
+**Alternativas descartadas:**
+
+- **Modelo Marketplace / Proveedores múltiples (Enfoque B):** Permitir que cualquier usuario preste servicios y a la vez reserve. Se descartó porque añade una capa innecesaria de complejidad (roles/permisos avanzados, relaciones polimórficas y múltiples agendas cruzadas) que dispersa el foco principal de la demo: el AI SDK, el servidor MCP y la lógica anti-superposición.
+
+**Consecuencias:**
+
+- **Positivas:**
+- Lógica de validación de disponibilidad altamente directa y eficiente (consultas indexadas sobre la tabla `bookings`).
+- Desarrollo más limpio y mantenible para las herramientas (tools) del agente de IA y el servidor MCP.
+- Menor fricción en la gestión de permisos (`enum` simple en la tabla `users`).
+
+- **Negativas:**
+- Los clientes no pueden ofrecer servicios propios dentro de la plataforma, limitando el sistema a un esquema de negocio único (ej. prestador independiente con un panel de administración).
+
+---
+
+#### Esquema de Datos Asociado
+
+```
++-------------------+       +-----------------------+       +-------------------+
+|       users       |       |       bookings        |       |     services      |
++-------------------+       +-----------------------+       +-------------------+
+| id (PK)           |1     *| id (PK)               |*     1| id (PK)           |
+| name              |-------| user_id (FK)          |-------| name              |
+| email             |       | service_id (FK)       |       | description       |
+| password          |       | start_time            |       | duration_minutes  |
+| role              |       | end_time              |       | price             |
++-------------------+       | status                |       | is_active         |
+                            | notes                 |       +-------------------+
+                            +-----------------------+
+
+```
+
 ### ADR 00..: titulo
 
 **Estado:**

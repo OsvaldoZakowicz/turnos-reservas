@@ -48,18 +48,19 @@ jobs:
       # misma version de php que usa sail en desarrollo
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: "8.5"
           extensions: mbstring, pdo_mysql
           coverage: none
 
-      # corta el pipeline si php es anterior al parche de php2shell
+        # corta el pipeline si php es anterior al parche de php2shell
       - name: verificar version minima de php
-        run: php -r 'exit(version_compare(PHP_VERSION, "8.5.12", ">=") ? 0 : 1);'
+        run: |
+          php -r 'exit(version_compare(PHP_VERSION, "8.5.12", ">=") ? 0 : 1);'
 
       # node para compilar el frontend vue
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
           cache: npm
 
       - name: instalar dependencias php

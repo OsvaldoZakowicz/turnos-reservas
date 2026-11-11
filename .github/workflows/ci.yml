@@ -43,7 +43,7 @@ jobs:
 
     steps:
       # baja el codigo del repositorio
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # misma version de php que usa sail en desarrollo
       - uses: shivammathur/setup-php@v2
@@ -58,7 +58,7 @@ jobs:
           php -r 'exit(version_compare(PHP_VERSION, "8.5.12", ">=") ? 0 : 1);'
 
       # node para compilar el frontend vue
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: npm

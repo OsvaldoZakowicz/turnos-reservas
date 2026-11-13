@@ -25,6 +25,8 @@ class ServiceController extends Controller
      */
     public function store(StoreServiceRequest $request)
     {
+        $validated = $request->validated();
+
         Service::create($validated);
         return to_route('services.index');
     }

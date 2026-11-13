@@ -9,7 +9,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 
     Route::resource('services', ServiceController::class)
-        ->only(['index', 'store', 'update']);
+        ->only(['index', 'store', 'update', 'destroy']);
 });
 
 require __DIR__.'/settings.php';

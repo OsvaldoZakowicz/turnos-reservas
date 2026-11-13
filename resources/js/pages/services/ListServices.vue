@@ -6,22 +6,10 @@ import DataTable from "@/components/DataTable.vue";
 import { Button } from "@/components/ui/button";
 import { index } from "@/routes/services";
 import ServiceFormDialog from "./ServiceFormDialog.vue";
+import ServiceDeleteDialog from "./ServiceDeleteDialog.vue";
 import type { Service, TableColumn } from "@/types";
 
 defineProps<{ services: Service[] }>();
-
-const dialogOpen = ref(false);
-const editing = ref<Service | null>(null);
-
-const openCreate = () => {
-	editing.value = null;
-	dialogOpen.value = true;
-};
-
-const openEdit = (service: Service) => {
-	editing.value = service;
-	dialogOpen.value = true;
-};
 
 // creamos un mapeo de atributos a encabezados de tabla
 // para componente tabla
@@ -42,6 +30,31 @@ defineOptions({
 		],
 	},
 });
+
+//----------------- modal crear, editar
+
+const dialogOpen = ref(false);
+const editing = ref<Service | null>(null);
+
+const openCreate = () => {
+	editing.value = null;
+	dialogOpen.value = true;
+};
+
+const openEdit = (service: Service) => {
+	editing.value = service;
+	dialogOpen.value = true;
+};
+
+// ---------------- modal eliminar
+
+const deleteOpen = ref(false);
+const deleting = ref<Service | null>(null);
+
+const openDelete = (service: Service) => {
+	deleting.value = service;
+	deleteOpen.value = true;
+};
 </script>
 
 <template>
@@ -65,10 +78,13 @@ defineOptions({
 				<Button variant="outline" size="sm" @click="openEdit(row)">
 					Editar
 				</Button>
-				<Button variant="destructive" size="sm">Eliminar</Button>
+				<Button variant="destructive" size="sm" @click="openDelete(row)">
+					Eliminar
+				</Button>
 			</template>
 		</DataTable>
 	</div>
 
 	<ServiceFormDialog v-model:open="dialogOpen" :service="editing" />
+	<ServiceDeleteDialog v-model:open="deleteOpen" :service="deleting" />
 </template>

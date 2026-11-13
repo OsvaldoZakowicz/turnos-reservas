@@ -8,7 +8,8 @@ Route::inertia('/', 'Welcome')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 
-    Route::resource('services', ServiceController::class)->only(['index', 'store']);
+    Route::resource('services', ServiceController::class)
+        ->only(['index', 'store', 'update']);
 });
 
 require __DIR__.'/settings.php';

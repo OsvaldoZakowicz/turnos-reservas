@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends Object">
-import { computed, useSlots } from "vue";
-import { TableColumn } from "@/types";
+import { computed, useSlots } from 'vue';
+import { TableColumn } from '@/types';
 
 const props = withDefaults(
 	defineProps<{
@@ -11,8 +11,8 @@ const props = withDefaults(
 		emptyText?: string;
 	}>(),
 	{
-		actionsLabel: "Acciones",
-		emptyText: "sin datos para mostrar",
+		actionsLabel: 'Acciones',
+		emptyText: 'sin datos para mostrar',
 	},
 );
 
@@ -40,7 +40,10 @@ const colspan = computed(
 						>
 							{{ column.label }}
 						</th>
-						<th v-if="hasActions" class="px-4 py-3 text-right font-medium">
+						<th
+							v-if="hasActions"
+							class="px-4 py-3 text-right font-medium"
+						>
 							{{ actionsLabel }}
 						</th>
 					</tr>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { router } from "@inertiajs/vue3";
-import { ref } from "vue";
-import ServiceController from "@/actions/App/Http/Controllers/ServiceController";
-import { Service } from "@/types";
-import Button from "@/components/ui/button/Button.vue";
+import { router } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import ServiceController from '@/actions/App/Http/Controllers/ServiceController';
+import { Service } from '@/types';
+import Button from '@/components/ui/button/Button.vue';
 import {
 	AlertDialog,
 	AlertDialogCancel,
@@ -12,13 +12,13 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 const props = defineProps<{
 	service: Service | null;
 }>();
 
-const open = defineModel<boolean>("open", { default: false });
+const open = defineModel<boolean>('open', { default: false });
 
 const processing = ref(false);
 
@@ -46,7 +46,9 @@ const confirm = () => {
 				</AlertDialogDescription>
 			</AlertDialogHeader>
 			<AlertDialogFooter>
-				<AlertDialogCancel :disabled="processing">Cancelar</AlertDialogCancel>
+				<AlertDialogCancel :disabled="processing"
+					>Cancelar</AlertDialogCancel
+				>
 				<Button variant="destructive" size="sm" @click="confirm"
 					>Eliminar
 				</Button>

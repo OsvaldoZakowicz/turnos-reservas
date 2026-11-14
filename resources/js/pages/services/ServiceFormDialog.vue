@@ -5,15 +5,15 @@ import {
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "@/components/ui/dialog";
-import ServiceForm from "./ServiceForm.vue";
-import { Service } from "@/types/service.js";
+} from '@/components/ui/dialog';
+import ServiceForm from './ServiceForm.vue';
+import { Service } from '@/types/service.js';
 
 defineProps<{
 	service?: Service | null;
 }>();
 
-const open = defineModel<boolean>("open", { default: false });
+const open = defineModel<boolean>('open', { default: false });
 </script>
 
 <template>
@@ -21,13 +21,13 @@ const open = defineModel<boolean>("open", { default: false });
 		<DialogContent>
 			<DialogHeader>
 				<DialogTitle>
-					{{ service ? "Editar servicio" : "Nuevo servicio" }}
+					{{ service ? 'Editar servicio' : 'Nuevo servicio' }}
 				</DialogTitle>
 				<DialogDescription>
 					{{
 						service
-							? "Modifica los datos del servicio"
-							: "Completa los datos del servicio que vas a ofrecer"
+							? 'Modifica los datos del servicio'
+							: 'Completa los datos del servicio que vas a ofrecer'
 					}}
 				</DialogDescription>
 			</DialogHeader>

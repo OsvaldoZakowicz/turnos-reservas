@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useForm } from "@inertiajs/vue3";
-import ServiceController from "@/actions/App/Http/Controllers/ServiceController";
-import InputError from "@/components/InputError.vue";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Service } from "@/types";
+import { useForm } from '@inertiajs/vue3';
+import ServiceController from '@/actions/App/Http/Controllers/ServiceController';
+import InputError from '@/components/InputError.vue';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Service } from '@/types';
 
 // un servicio opcionalmente
 const props = defineProps<{
@@ -22,8 +22,8 @@ const emit = defineEmits<{
 // para cada campo o es un valor a editar o un default
 // depende de si creamos o editamos
 const form = useForm({
-	name: props.service?.name ?? "",
-	description: props.service?.description ?? "",
+	name: props.service?.name ?? '',
+	description: props.service?.description ?? '',
 	duration_minutes: props.service?.duration_minutes ?? 60,
 	// el decimal llega como string desde laravel
 	price: Number(props.service?.price ?? 0),
@@ -34,7 +34,7 @@ const cancel = () => {
 	// descarta lo escrito y los errores antes de cerrar
 	form.reset();
 	form.clearErrors();
-	emit("close");
+	emit('close');
 };
 
 // submit para crear o editar segun
@@ -44,7 +44,7 @@ const submit = () => {
 		preserveScroll: true,
 		onSuccess: () => {
 			form.reset();
-			emit("saved");
+			emit('saved');
 		},
 	};
 
@@ -108,7 +108,7 @@ const submit = () => {
 				Cancelar
 			</Button>
 			<Button type="submit" :disabled="form.processing">{{
-				service ? "Editar servicio" : "Guardar"
+				service ? 'Editar servicio' : 'Guardar'
 			}}</Button>
 		</div>
 	</form>

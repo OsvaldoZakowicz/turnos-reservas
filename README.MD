@@ -200,6 +200,50 @@ Adoptar el **Enfoque A (Modelo Unificado)**:
 
 ```
 
+### ADR 007: agenda única y estrategia de concurrencia
+
+**Estado:** aceptado
+**fecha:** 09/11/2026
+
+**contexto**
+El esquema no tiene una tabla de recursos o profesionales: solo `users`, `services` y `bookings`.
+El ADR 006 dejó un modelo unificado donde el admin configura los servicios y los clientes reservan.
+Hay que garantizar que dos reservas nunca se superpongan, incluso con requests simultáneos.
+
+**decisión**
+
+1. **Agenda única:** existe un solo calendario global. Una reserva activa ocupa el
+   intervalo [start_time, end_time) para todos los servicios, sin importar cuál sea.
+2. **Superposición:** dos reservas se superponen si `nueva.start < existente.end`
+   y `nueva.end > existente.start`. Intervalo semiabierto: una que termina a las 10:00
+   no choca con otra que empieza a las 10:00.
+3. **Estados:** solo las reservas con status `pending` o `confirmed` bloquean la agenda.
+   Las canceladas liberan el horario.
+4. **Fechas:** se guardan en UTC y se convierten en la capa de presentación.
+5. **Concurrencia:** `BookingService` toma un lock atómico con clave fija
+   (`Cache::lock`, driver `database`) y dentro abre una `DB::transaction` donde
+   verifica el solapamiento, calcula `end_time` (start + duration_minutes) e inserta.
+   Si no obtiene el lock en unos segundos, lanza una excepción de dominio.
+
+**alternativas descartadas**
+
+- **Agenda por servicio:** exigiría decidir qué recurso atiende cada servicio y
+  complica el modelo sin aportar a lo que demuestra el proyecto.
+- **`lockForUpdate()` sobre el rango:** con InnoDB y REPEATABLE READ, un rango vacío
+  genera gap locks y deadlocks entre transacciones concurrentes. Obliga a reintentos.
+- **Constraint de exclusión en la BD:** MySQL no lo soporta (sí PostgreSQL).
+- **Slots fijos con índice único:** simple, pero rígido: no admite servicios de
+  duración variable.
+- **Lock optimista (versión):** no sirve para insertar filas nuevas.
+
+**consecuencias**
+
+- (+) Sin infraestructura extra: funciona con MySQL y el cache en base de datos.
+- (+) La regla vive en un solo lugar (`BookingService`), fácil de testear.
+- (-) El lock serializa todas las reservas: aceptable para una agenda única.
+- (-) La garantía depende de que toda reserva pase por el servicio, no hay red de seguridad en la BD.
+- (-) Si algún día hay varios profesionales, habrá que sumar una tabla de recursos y un lock por recurso.
+
 ### ADR 00..: titulo
 
 **Estado:**

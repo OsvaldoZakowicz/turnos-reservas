@@ -23,11 +23,11 @@ class StoreServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'              => ['required', 'string', 'max:255'],
-            'description'       => ['nullable', 'string', 'max:1000'],
-            'duration_minutes'  => ['required', 'integer', 'min:5', 'max:1440'],
-            'price'             => ['required', 'numeric', 'decimal:0,2', 'min:0'],
-            'is_active'         => ['required', 'boolean'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:1000'],
+            'duration_minutes' => ['required', 'integer', 'min:5', 'max:1440'],
+            'price' => ['required', 'numeric', 'decimal:0,2', 'min:0'],
+            'is_active' => ['required', 'boolean'],
         ];
     }
 
@@ -51,7 +51,7 @@ class StoreServiceRequest extends FormRequest
             'price.numeric' => 'Debe ser un numero',
             'price.decimal' => 'Debe ser un decimal de hasta 2 caracteres despues del punto',
             'price.min' => 'Puede ser de costo :min como minimo',
-            'is_active.required' => 'El estado es necesario'
+            'is_active.required' => 'El estado es necesario',
         ];
     }
 }

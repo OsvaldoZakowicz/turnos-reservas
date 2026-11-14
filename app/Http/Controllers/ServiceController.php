@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
-use Illuminate\Http\Request;
+use App\Models\Service;
 use Inertia\Inertia;
 
 class ServiceController extends Controller
@@ -15,8 +14,8 @@ class ServiceController extends Controller
      */
     public function index()
     {
-        return Inertia::render("services/ListServices", [
-            "services" => Service::query()->orderBy("name")->get(),
+        return Inertia::render('services/ListServices', [
+            'services' => Service::query()->orderBy('name')->get(),
         ]);
     }
 
@@ -28,6 +27,7 @@ class ServiceController extends Controller
         $validated = $request->validated();
 
         Service::create($validated);
+
         return to_route('services.index');
     }
 
@@ -36,17 +36,17 @@ class ServiceController extends Controller
      */
     public function update(UpdateServiceRequest $request, Service $service)
     {
-       $validated = $request->validated();
+        $validated = $request->validated();
 
-       $service->name               = $validated['name'];
-       $service->description        = $validated['description'];
-       $service->duration_minutes   = $validated['duration_minutes'];
-       $service->price              = $validated['price'];
-       $service->is_active          = $validated['is_active'];
+        $service->name = $validated['name'];
+        $service->description = $validated['description'];
+        $service->duration_minutes = $validated['duration_minutes'];
+        $service->price = $validated['price'];
+        $service->is_active = $validated['is_active'];
 
-       $service->save();
+        $service->save();
 
-       return to_route('services.index');
+        return to_route('services.index');
     }
 
     /**
